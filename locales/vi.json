@@ -1,0 +1,7 @@
+{
+  "USERNAME_REQUIRED": "Bắt buộc nhập tài khoản",
+  "PASSWORD_REQUIRED": "Bắt buộc nhập mật khẩu",
+  "USERNAME_ALREADY_EXIST": "Tài khoản đã tồn tại",
+  "USER_NOT_FOUND": "Không tìm thấy người dùng",
+  "USER_ID_IS_NOT_A_NUMBER": "Id tài khoản không phải là số"
+}

@@ -1,32 +1,24 @@
 const fs = require('fs');
 const path = require('path');
+const Response = require('../helpers/response');
 
 const filePath = path.resolve('./', 'database', 'users.json');
 
-exports.getUserList = (req, res) => {
+exports.getUserList = (req, res, next) => {
     try {
         const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
         if (Array.isArray(fileData) && fileData.length > 0) {
-            return res.json({
-                message: 'Get user list successfully.',
-                result: fileData
-            });
+            return Response.success(res, fileData);
         }
 
-        return res.json({
-            message: 'Get user list successfully.',
-            result: []
-        });
-    } catch (err) {
-        res.json({
-            message: 'Something went wrong!',
-            error: err
-        });
+        return Response.success(res);
+    } catch (e) {
+        return next(e);
     }
 };
 
-exports.getUserById = (req, res) => {
+exports.getUserById = (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = parseInt(id);
@@ -36,44 +28,28 @@ exports.getUserById = (req, res) => {
             for (let i = 0, len = fileData.length; i < len; i ++) {
                 if (fileData[i].id === userId) {
                     const userData = fileData[i];
-                    return res.json({
-                        message: 'Get user by id successfully.',
-                        result: userData
-                    });
+                    return Response.success(res, userData);
                 }
             }
         }
 
-        return res.json({
-            message: 'User not found!'
-        });
-    } catch (err) {
-        res.json({
-            message: 'Something went wrong!',
-            error: err
-        });
+        return next(new Error('USER_NOT_FOUND'));
+    } catch (e) {
+        return next(e);
     }
 };
 
-exports.createUser = (req, res) => {
+exports.createUser = (req, res, next) => {
     try {
         const { username, password } = req.body;
 
-        if (!username || !password) {
-            return res.json({
-                message: 'Missing username or password!'
-            });
-        }
-
-        let userId = 0;
+        let userId = 1;
         const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
         if (Array.isArray(fileData) && fileData.length > 0) {
             for (let i = 0, len = fileData.length; i < len; i ++) {
                 if (fileData[i].username === username) {
-                    return res.json({
-                        message: 'Username is used!',
-                    });
+                    return next(new Error('USERNAME_ALREADY_EXIST'))
                 }
             }
 
@@ -88,22 +64,13 @@ exports.createUser = (req, res) => {
 
         fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
-        res.json({
-            message: 'Insert user successfully.',
-            result: {
-                id: userId,
-                username
-            }
-        });
-    } catch (err) {
-        res.json({
-            message: 'Something went wrong!',
-            error: err
-        });
+        return Response.success(res, { id: userId });
+    } catch (e) {
+        return next(e);
     }
 };
 
-exports.deleteUser = (req, res) => {
+exports.deleteUser = (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = parseInt(id);
@@ -113,24 +80,14 @@ exports.deleteUser = (req, res) => {
         });
 
         if (index < 0) {
-            return res.json({
-                message: 'User not found!'
-            });
+            return next(new Error('USER_NOT_FOUND'));
         }
 
         fileData.splice(index, 1);
         fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
-        return res.json({
-            message: 'Delete user successfully.',
-            result: {
-                id: userId
-            }
-        })
-    } catch (err) {
-        res.json({
-            message: 'Something went wrong!',
-            error: err
-        });
+        return Response.success(res);
+    } catch (e) {
+        return next(e);
     }
 };
