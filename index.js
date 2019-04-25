@@ -12,7 +12,10 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ type: 'application/json' }));
 
-app.get('/api/v1/users', userController.getUserList);
+app.get(
+    '/api/v1/users',
+    userController.getUserList
+);
 
 app.get(
     '/api/v1/users/:id',
@@ -26,6 +29,12 @@ app.post(
     userController.createUser
 );
 
+app.put(
+    '/api/v1/users/:id',
+    userMiddleware.validateChangePassword,
+    userController.changePassword
+);
+
 app.delete(
     '/api/v1/users/:id',
     userMiddleware.validateDeleteUser,
@@ -33,14 +42,6 @@ app.delete(
 );
 
 app.use((err, req, res, next) => {
-    // return res.json({
-    //     success: false,
-    //     error: {
-    //         code: err.message,
-    //         message: errorMessage[err.message]
-    //     }
-    // });
-
     return Response.error(res, err)
 });
 
