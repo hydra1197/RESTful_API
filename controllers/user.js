@@ -1,96 +1,61 @@
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
 const Response = require('../helpers/response');
+const { ObjectId } = require('mongodb');
 
-const filePath = path.resolve('./', 'database', 'users.json');
-
-exports.getUserList = (req, res, next) => {
+exports.getUserList = async (req, res, next) => {
     try {
-        const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const db = req.db;
 
-        if (Array.isArray(fileData) && fileData.length > 0) {
-            return Response.success(res, fileData);
-        }
+        const users = await db.collection('users').find().toArray();
 
-        return Response.success(res);
+        return Response.success(res, users);
     } catch (e) {
         return next(e);
     }
 };
 
-exports.getUserById = (req, res, next) => {
+exports.getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userId = parseInt(id);
-        const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        const index = fileData.findIndex((user) => {
-            return parseInt(user.id) === userId
-        });
+        const db = req.db;
 
-        if (index < 0) {
-            return next(new Error('USER_NOT_FOUND'))
+        const user = await db.collection('users').findOne({ _id: ObjectId(id) });
+
+        if (!user) {
+            return next(new Error('USER_NOT_FOUND'));
         }
 
-        return Response.success(res, fileData[index]);
+        return Response.success(res, user);
     } catch (e) {
         return next(e);
     }
 };
 
-exports.createUser = (req, res, next) => {
+exports.createUser = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-        let userId = 1;
-        const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        const index = fileData.findIndex((user) => {
-            return user.username === username
-        });
+        const db = req.db;
 
-        if (index >= 0) {
-            return next(new Error('USERNAME_ALREADY_EXIST'))
-        }
+        const result = await db.collection('users').insertOne({ username, password });
 
-        userId = fileData[fileData.length - 1].id + 1;
-
-        fileData.push({
-            id: userId,
-            username,
-            password
-        });
-
-        fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
-
-        return Response.success(res, { id: userId });
+        return Response.success(res, { username, _id: result.insertedId });
     } catch (e) {
         return next(e);
     }
 };
 
-exports.changePassword = (req, res, next) => {
+exports.changePassword = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { oldPassword, newPassword } = req.body;
-        const userId = parseInt(id);
-        const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const { newPassword } = req.body;
+        const db = req.db;
 
-        const index = fileData.findIndex((user) => {
-            return parseInt(user.id) === userId
-        });
+        const result = await db.collection('users').updateOne({ _id: ObjectId(id) }, { $set: { password: newPassword } });
 
-        if (index < 0) {
+        if (!result.result.nModified) {
             return next(new Error('USER_NOT_FOUND'));
         }
-
-        const userData = fileData[index];
-
-        if (oldPassword !== userData.password) {
-            return next(new Error('OLD_PASSWORD_INCORRECT'));
-        }
-
-        userData.password = newPassword;
-        fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
         return Response.success(res);
     } catch (e) {
@@ -98,22 +63,16 @@ exports.changePassword = (req, res, next) => {
     }
 };
 
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userId = parseInt(id);
-        const fileData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const db = req.db;
 
-        const index = fileData.findIndex((user) => {
-            return parseInt(user.id) === userId
-        });
+        const result = await db.collection('users').remove({ _id: ObjectId(id) });
 
-        if (index < 0) {
+        if (!result.result.n) {
             return next(new Error('USER_NOT_FOUND'));
         }
-
-        fileData.splice(index, 1);
-        fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
         return Response.success(res);
     } catch (e) {
