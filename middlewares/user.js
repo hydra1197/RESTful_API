@@ -1,5 +1,7 @@
 'use strict';
 
+const mongodb = require('mongodb');
+
 exports.validateCreateUser = (req, res, next) => {
     const { username, password } = req.body;
 
@@ -16,10 +18,9 @@ exports.validateCreateUser = (req, res, next) => {
 
 exports.validateGetUserById = (req, res, next) => {
     const { id } = req.params;
-    const userId = parseInt(id);
 
-    if (Number.isNaN(userId)) {
-        return next(new Error('USER_ID_IS_NOT_A_NUMBER'));
+    if (!mongodb.ObjectID.isValid(id)) {
+        return next(new Error('USER_ID_IS_INVALID'));
     }
 
     return next();
@@ -28,10 +29,9 @@ exports.validateGetUserById = (req, res, next) => {
 exports.validateChangePassword = (req, res, next) => {
     const { id } = req.params;
     const { oldPassword, newPassword, confirmPassword } = req.body;
-    const userId = parseInt(id);
 
-    if (Number.isNaN(userId)) {
-        return next(new Error('USER_ID_IS_NOT_A_NUMBER'));
+    if (!mongodb.ObjectID.isValid(id)) {
+        return next(new Error('USER_ID_IS_INVALID'));
     }
 
     if (!oldPassword) {
@@ -55,10 +55,9 @@ exports.validateChangePassword = (req, res, next) => {
 
 exports.validateDeleteUser = (req, res, next) => {
     const { id } = req.params;
-    const userId = parseInt(id);
 
-    if (Number.isNaN(userId)) {
-        return next(new Error('USER_ID_IS_NOT_A_NUMBER'));
+    if (!mongodb.ObjectID.isValid(id)) {
+        return next(new Error('USER_ID_IS_INVALID'));
     }
 
     return next();

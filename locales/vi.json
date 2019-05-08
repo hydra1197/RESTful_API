@@ -8,5 +8,6 @@
   "PASSWORD_NOT_MATCH": "Mật khẩu không trùng khớp",
   "OLD_PASSWORD_REQUIRED": "Bắt buộc nhập mật khẩu cũ",
   "NEW_PASSWORD_REQUIRED": "Bắt buộc nhập mật khẩu mới",
-  "CONFIRM_PASSWORD_REQUIRED": "Bắt buộc nhập lại mật khẩu mới"
+  "CONFIRM_PASSWORD_REQUIRED": "Bắt buộc nhập lại mật khẩu mới",
+  "USER_ID_IS_INVALID": "Id của người dùng không hợp lệ"
 }

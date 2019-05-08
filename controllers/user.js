@@ -37,6 +37,12 @@ exports.createUser = async (req, res, next) => {
         const { username, password } = req.body;
         const db = req.db;
 
+        const user = await db.collection('users').findOne({ username });
+
+        if (user) {
+            return next(new Error('USERNAME_ALREADY_EXIST'));
+        }
+
         const result = await db.collection('users').insertOne({ username, password });
 
         return Response.success(res, { username, _id: result.insertedId });
