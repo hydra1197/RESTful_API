@@ -10,10 +10,7 @@ class Response {
     static error(res, err) {
         return res.json({
            success: false,
-           errors: {
-               code: err.message || err,
-               message: errorMessage[err.message]
-           }
+           errors: errorMessage[err.message]
         });
     }
 }
