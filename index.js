@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Response = require('./helpers/response');
 const userRoute = require('./apis/user');
+const productRoute = require('./apis/product');
 const models = require('./models');
 
 const PORT = 9000;
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ type: 'application/json' }));
 
 userRoute.load(app);
+productRoute.load(app);
 
 app.use((err, req, res, next) => {
     // if (Array.isArray(err.errors)) {
@@ -29,6 +31,7 @@ app.use((err, req, res, next) => {
     //     return Response.error(res, messages);
     // }
 
+    console.log(err);
     return Response.error(res, err)
 });
 

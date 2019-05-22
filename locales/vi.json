@@ -10,5 +10,7 @@
   "NEW_PASSWORD_REQUIRED": "Bắt buộc nhập mật khẩu mới",
   "CONFIRM_PASSWORD_REQUIRED": "Bắt buộc nhập lại mật khẩu mới",
   "USER_ID_IS_INVALID": "Id của người dùng không hợp lệ",
-  "OLD_PASSWORD_NOT_MATCH": "Mật khẩu cũ không đúng"
+  "OLD_PASSWORD_NOT_MATCH": "Mật khẩu cũ không đúng",
+  "PASSWORD_INCORRECT": "Mật khẩu không đúng",
+  "PERMISSION_DENIED": "Không có quyền truy cập"
 }

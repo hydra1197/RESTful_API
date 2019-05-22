@@ -3,14 +3,8 @@
 const mongodb = require('mongodb');
 const Joi = require('@hapi/joi');
 
-exports.validateGetUserList = () => {
-  return {
-      query: {
-          name: Joi.string().required(),
-          age: Joi.number().required().min(3),
-
-      }
-  }
+exports.validateGetUserList = (req, res, next) => {
+  return next();
 };
 
 exports.validateCreateUser = (req, res, next) => {
@@ -69,6 +63,20 @@ exports.validateDeleteUser = (req, res, next) => {
 
     if (!mongodb.ObjectID.isValid(id)) {
         return next(new Error('USER_ID_IS_INVALID'));
+    }
+
+    return next();
+};
+
+exports.validateLogin = (req, res, next) => {
+    const { username, password } = req.body;
+
+    if (!username) {
+        return next(new Error('USERNAME_REQUIRED'));
+    }
+
+    if (!password) {
+        return next(new Error('PASSWORD_REQUIRED'));
     }
 
     return next();

@@ -1,36 +1,48 @@
-const userMiddleware = require('../validations/user');
 const userController = require('../controllers/user');
-const validate = require('express-validation');
-const { validateGetUserList } = require('../validations/user');
+const { Auth } = require('../middlewares');
+const {
+    validateGetUserList,
+    validateGetUserById,
+    validateCreateUser,
+    validateChangePassword,
+    validateDeleteUser,
+    validateLogin
+} = require('../validations/user');
 
 exports.load = app => {
     app.get(
         '/api/v1/users',
-        // validate(validateGetUserList()),
+        [Auth.isAuth, validateGetUserList],
         userController.getUserList
     );
 
     app.get(
         '/api/v1/users/:id',
-        // userMiddleware.validateGetUserById,
+        validateGetUserById,
         userController.getUserById
     );
 
     app.post(
         '/api/v1/users',
-        // userMiddleware.validateCreateUser,
+        validateCreateUser,
         userController.createUser
     );
 
     app.put(
         '/api/v1/users/:id',
-        // userMiddleware.validateChangePassword,
+        validateChangePassword,
         userController.changePassword
     );
 
     app.delete(
         '/api/v1/users/:id',
-        // userMiddleware.validateDeleteUser,
+        validateDeleteUser,
         userController.deleteUser
+    );
+
+    app.post(
+        '/api/v1/login',
+        validateLogin,
+        userController.login
     );
 };
