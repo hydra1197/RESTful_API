@@ -6,7 +6,7 @@ const privateKey = fs.readFileSync(path.resolve(__dirname, '../configs/cert/priv
 const publicKey = fs.readFileSync(path.resolve(__dirname, '../configs/cert/public.key'), 'utf8');
 
 class JWT {
-    static sign(uid, options) {
+    static sign(payload, options) {
         options = Object.assign(
             {
                 algorithm: 'RS256',
@@ -15,7 +15,7 @@ class JWT {
             options
         );
 
-        return jwt.sign(uid, privateKey, options);
+        return jwt.sign(payload, privateKey, options);
     }
 
     static verifyToken(token, options = {}) {

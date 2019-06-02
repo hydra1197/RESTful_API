@@ -1,5 +1,6 @@
 const productController = require('../controllers/product');
 const { validateCreateProduct } = require('../validations/product');
+const { Auth } = require('../middlewares');
 
 exports.load = app => {
     app.get(
@@ -9,7 +10,7 @@ exports.load = app => {
 
     app.post(
         '/api/v1/product',
-        validateCreateProduct,
+        [Auth.isAuth, validateCreateProduct],
         productController.createProduct
     );
 };

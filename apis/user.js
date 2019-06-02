@@ -12,7 +12,7 @@ const {
 exports.load = app => {
     app.get(
         '/api/v1/users',
-        [Auth.isAuth, validateGetUserList],
+        validateGetUserList,
         userController.getUserList
     );
 
@@ -30,13 +30,13 @@ exports.load = app => {
 
     app.put(
         '/api/v1/users/:id',
-        validateChangePassword,
+        [Auth.isAuth, validateChangePassword],
         userController.changePassword
     );
 
     app.delete(
         '/api/v1/users/:id',
-        validateDeleteUser,
+        [Auth.isAuth, validateDeleteUser],
         userController.deleteUser
     );
 

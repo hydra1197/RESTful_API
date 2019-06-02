@@ -12,5 +12,5 @@
   "USER_ID_IS_INVALID": "Id của người dùng không hợp lệ",
   "OLD_PASSWORD_NOT_MATCH": "Mật khẩu cũ không đúng",
   "PASSWORD_INCORRECT": "Mật khẩu không đúng",
-  "PERMISSION_DENIED": "Không có quyền truy cập"
+  "PERMISSION_DENIED": "Không có quyền thực thi"
 }

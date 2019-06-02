@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const Response = require('./helpers/response');
 const userRoute = require('./apis/user');
 const productRoute = require('./apis/product');
+const groupRoute = require('./apis/group');
+const messageRoute = require('./apis/message');
 const models = require('./models');
 
 const PORT = 9000;
@@ -22,6 +24,8 @@ app.use(bodyParser.json({ type: 'application/json' }));
 
 userRoute.load(app);
 productRoute.load(app);
+groupRoute.load(app);
+messageRoute.load(app);
 
 app.use((err, req, res, next) => {
     // if (Array.isArray(err.errors)) {

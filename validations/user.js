@@ -8,7 +8,9 @@ exports.validateGetUserList = (req, res, next) => {
 };
 
 exports.validateCreateUser = (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password, name, email } = req.body;
+
+    console.log({ username, password, name, email })
 
     if (!username) {
         return next(new Error('USERNAME_REQUIRED'));
@@ -16,6 +18,14 @@ exports.validateCreateUser = (req, res, next) => {
 
     if (!password) {
         return next(new Error('PASSWORD_REQUIRED'));
+    }
+
+    if (!name) {
+        return next(new Error('NAME_REQUIRED'));
+    }
+
+    if (!email) {
+        return next(new Error('EMAIL_REQUIRED'));
     }
 
     return next();

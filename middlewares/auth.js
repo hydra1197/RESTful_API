@@ -8,12 +8,12 @@ class Auth {
             const token = await JWT.getToken(req);
 
             if (!token) {
-                return next(new Error('PERMISSION_DENIED'));
+                return next(new Error('AUTHENTICATION_FAILED'));
             }
 
             const data = await JWT.verifyToken(token);
 
-            req.user = data.uid;
+            req.user = data;
 
             return next();
         } catch (e) {

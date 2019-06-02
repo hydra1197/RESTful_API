@@ -40,7 +40,7 @@ exports.getUserById = async (req, res, next) => {
 
 exports.createUser = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, name, email } = req.body;
 
         const userData = await User.findOne({ username });
 
@@ -51,7 +51,7 @@ exports.createUser = async (req, res, next) => {
         const salt = bcrypt.genSaltSync(2);
         const hashPassword = bcrypt.hashSync(password, salt);
 
-        const user = await User.create({ username, password: hashPassword });
+        const user = await User.create({ username, password: hashPassword, name, email });
         delete user._doc.password;
         delete user._doc.createdAt;
         delete user._doc.updatedAt;
